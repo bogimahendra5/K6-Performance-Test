@@ -7,10 +7,11 @@ export const options = {
 };
 
 const query = `
-    users(limit: 10) {
-      id
-      name
-    }`;
+    query($limit : Int!){
+        users(limit: $limit) {
+            id
+            name
+    }}`;
 
 const headers = {
   "Content-Type": "application/json",
@@ -21,7 +22,10 @@ const headers = {
 export default function () {
   let res = http.post(
     "https://hasura.io/learn/graphql",
-    JSON.stringify({ query }),
+    JSON.stringify({
+      query,
+      variables: { limit: 5 },
+    }),
     { headers }
   );
 
