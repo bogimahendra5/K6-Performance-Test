@@ -3,17 +3,20 @@ import { check } from "k6";
 
 // Load test option
 export const options = {
-  vus: 5,
-  duration: "5s",
+  vus: 1,
+  duration: "3s",
 };
 
-// Query get Users id and Users name
+// Quary mutation Insert Todos
 const query = `
-    query($limit : Int!){
-        users(limit: $limit) {
-            id
-            name
-    }}`;
+  mutation {
+    insert_todos(objects: [{title: "AutomationTest"}]) {
+      returning {
+        id
+        title
+      }
+    }
+  }`;
 
 // Headers
 const headers = {
@@ -27,7 +30,6 @@ export default function () {
     "https://hasura.io/learn/graphql",
     JSON.stringify({
       query,
-      variables: { limit: 5 },
     }),
     { headers }
   );
@@ -35,12 +37,8 @@ export default function () {
   // Verify / Assertion response
   check(res, {
     "is status code 200": (r) => r.status === 200,
-    "Verify response body": (r) =>
-      r.body.includes(
-        "id",
-        "auth0|5cc0ea100e618b11b031bb99",
-        "name",
-        "tui.glen"
-      ),
+    "Verify response body": (r) => r.body.includes("title"),
   });
+
+  console.log(res.body);
 }

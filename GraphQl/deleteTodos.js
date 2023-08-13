@@ -1,19 +1,24 @@
 import http from "k6/http";
 import { check } from "k6";
 
+// Run insertTodos.js before run this Load Test for inserting data
+
 // Load test option
 export const options = {
-  vus: 5,
-  duration: "5s",
+  vus: 1,
+  duration: "1s",
 };
 
-// Query get Users id and Users name
+// Quary mutation Insert Todos
 const query = `
-    query($limit : Int!){
-        users(limit: $limit) {
-            id
-            name
-    }}`;
+  mutation {
+    delete_todos(where: {title: {_eq:"AutomationTest"}}) {
+      returning {
+        id
+        title
+      }
+    }
+  }`;
 
 // Headers
 const headers = {
@@ -27,7 +32,6 @@ export default function () {
     "https://hasura.io/learn/graphql",
     JSON.stringify({
       query,
-      variables: { limit: 5 },
     }),
     { headers }
   );
@@ -35,12 +39,8 @@ export default function () {
   // Verify / Assertion response
   check(res, {
     "is status code 200": (r) => r.status === 200,
-    "Verify response body": (r) =>
-      r.body.includes(
-        "id",
-        "auth0|5cc0ea100e618b11b031bb99",
-        "name",
-        "tui.glen"
-      ),
+    "Verify response body": (r) => r.body.includes("title", "AutomationTest"),
   });
+
+  console.log(res.body);
 }
