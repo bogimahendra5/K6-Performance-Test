@@ -12,7 +12,7 @@ export default function () {
 
   // Body Request
   const payload = JSON.stringify({
-    name: "Bogibot",
+    name: "BogiTest",
     job: "leader",
   });
 
