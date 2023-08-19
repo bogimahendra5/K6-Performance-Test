@@ -11,7 +11,7 @@ export const options = {
   },
 };
 
-export default function () {
+export default function getListUsers() {
   const url = "https://reqres.in/api/users/";
 
   // Assertion Body Response, Status Code
